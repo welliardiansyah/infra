@@ -1,0 +1,18 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: ServiceEntry
+metadata:
+  name: mailhog
+spec:
+  hosts:
+  - mailhog
+  addresses:
+    - 52.77.223.234
+  ports:
+  - name: http-ok
+    number: 80
+    protocol: HTTP
+  - name: smtp-ok
+    number: 1025
+    protocol: TCP
+  location: MESH_EXTERNAL
+  # resolution: DNS

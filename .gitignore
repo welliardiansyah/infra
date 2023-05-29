@@ -1,0 +1,5 @@
+.DS_Store
+.env
+k8s/config/efood-config.yaml
+k8s/config*
+proxy/node_modules/

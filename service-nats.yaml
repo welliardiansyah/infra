@@ -1,0 +1,57 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    meta.helm.sh/release-name: nats
+    meta.helm.sh/release-namespace: default
+  creationTimestamp: "2021-12-26T09:03:31Z"
+  labels:
+    app.kubernetes.io/instance: nats
+    app.kubernetes.io/managed-by: Helm
+    app.kubernetes.io/name: nats
+    app.kubernetes.io/version: 2.6.3
+    helm.sh/chart: nats-0.9.2
+  name: nats
+  namespace: default
+  resourceVersion: "1953"
+  uid: baa96b5b-883a-4f04-9fbe-eadc6a46ad68
+spec:
+  clusterIP: None
+  clusterIPs:
+  - None
+  internalTrafficPolicy: Cluster
+  ipFamilies:
+  - IPv4
+  ipFamilyPolicy: SingleStack
+  ports:
+  - name: client
+    port: 4222
+    protocol: TCP
+    targetPort: 4222
+  - name: cluster
+    port: 6222
+    protocol: TCP
+    targetPort: 6222
+  - name: monitor
+    port: 8222
+    protocol: TCP
+    targetPort: 8222
+  - name: metrics
+    port: 7777
+    protocol: TCP
+    targetPort: 7777
+  - name: leafnodes
+    port: 7422
+    protocol: TCP
+    targetPort: 7422
+  - name: gateways
+    port: 7522
+    protocol: TCP
+    targetPort: 7522
+  selector:
+    app.kubernetes.io/instance: nats
+    app.kubernetes.io/name: nats
+  sessionAffinity: None
+  type: ClusterIP
+status:
+  loadBalancer: {}

@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: merchants-vs
+spec:
+  hosts:
+    - merchants-svc
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/merchants
+    route:
+    - destination:
+        host: merchants-svc
+        port:
+          number: 3000
+  - match:
+    - uri:
+        prefix: /api/v1/internal/merchants
+    route:
+    - destination:
+        host: merchants-svc
+        port:
+          number: 3000

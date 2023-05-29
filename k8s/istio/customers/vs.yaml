@@ -1,0 +1,24 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: customers-vs
+spec:
+  hosts:
+    - customers-svc
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/customers
+    route:
+    - destination:
+        host: customers-svc
+        port:
+          number: 3000
+  - match:
+    - uri:
+        prefix: /api/v1/internal/customers
+    route:
+    - destination:
+        host: customers-svc
+        port:
+          number: 3000

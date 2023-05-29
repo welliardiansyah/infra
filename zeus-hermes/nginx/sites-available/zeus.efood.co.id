@@ -1,0 +1,52 @@
+server {
+    listen 80;
+    listen [::]:80;
+
+    server_name zeus.efood.co.id;
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+
+    root /var/www/zeus.efood.co.id/html;
+    index index.html index.htm;
+
+    server_name zeus.efood.co.id;
+
+    client_max_body_size 20M;
+
+    include snippets/ssl-params.conf;
+
+    ssl_certificate     /etc/letsencrypt/live/zeus.efood.co.id/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/zeus.efood.co.id/privkey.pem;
+
+    location / {
+        try_files $uri /index.html;
+    }
+
+    # Media: images, icons, video, audio, HTC
+    location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+        expires 1M;
+        access_log off;
+        add_header Cache-Control "public";
+    }
+
+    # Javascript and CSS files
+    location ~* \.(?:css|js)$ {
+        try_files $uri =404;
+        expires 1y;
+        access_log off;
+        add_header Cache-Control "public";
+    }
+
+    # Any route containing a file extension (e.g. /devicesfile.js)
+    location ~ ^.+\..+$ {
+        try_files $uri =404;
+    }
+
+    location /api {
+        proxy_pass http://k8s-ingressn-ingressn-6b23186bd4-6c07870f1f263e07.elb.ap-southeast-1.amazonaws.com;
+    }
+}

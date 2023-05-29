@@ -1,0 +1,256 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  annotations:
+    prometheus.io/path: /metrics
+    prometheus.io/port: "7777"
+    prometheus.io/scrape: "true"
+  creationTimestamp: "2021-12-26T09:03:31Z"
+  generateName: nats-
+  labels:
+    app.kubernetes.io/instance: nats
+    app.kubernetes.io/name: nats
+    controller-revision-hash: nats-7c7d87dffc
+    statefulset.kubernetes.io/pod-name: nats-0
+  name: nats-0
+  namespace: default
+  ownerReferences:
+  - apiVersion: apps/v1
+    blockOwnerDeletion: true
+    controller: true
+    kind: StatefulSet
+    name: nats
+    uid: d7212428-1d83-4ced-a681-8c881978aca3
+  resourceVersion: "4003"
+  uid: cf85c48b-ada2-41d9-9765-f7c8bd9c8685
+spec:
+  containers:
+  - command:
+    - nats-server
+    - --config
+    - /etc/nats-config/nats.conf
+    env:
+    - name: POD_NAME
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.name
+    - name: SERVER_NAME
+      value: $(POD_NAME)
+    - name: POD_NAMESPACE
+      valueFrom:
+        fieldRef:
+          apiVersion: v1
+          fieldPath: metadata.namespace
+    - name: CLUSTER_ADVERTISE
+      value: $(POD_NAME).nats.$(POD_NAMESPACE).svc.cluster.local
+    image: nats:2.6.3-alpine
+    imagePullPolicy: IfNotPresent
+    lifecycle:
+      preStop:
+        exec:
+          command:
+          - /bin/sh
+          - -c
+          - nats-server -sl=ldm=/var/run/nats/nats.pid && /bin/sleep 120
+    livenessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /
+        port: 8222
+        scheme: HTTP
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    name: nats
+    ports:
+    - containerPort: 4222
+      name: tcp-client
+      protocol: TCP
+    - containerPort: 7422
+      name: leafnodes
+      protocol: TCP
+    - containerPort: 7522
+      name: gateways
+      protocol: TCP
+    - containerPort: 6222
+      name: cluster
+      protocol: TCP
+    - containerPort: 8222
+      name: monitor
+      protocol: TCP
+    - containerPort: 7777
+      name: metrics
+      protocol: TCP
+    readinessProbe:
+      failureThreshold: 3
+      httpGet:
+        path: /
+        port: 8222
+        scheme: HTTP
+      initialDelaySeconds: 10
+      periodSeconds: 10
+      successThreshold: 1
+      timeoutSeconds: 5
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /etc/nats-config
+      name: config-volume
+    - mountPath: /var/run/nats
+      name: pid
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-48g7r
+      readOnly: true
+  - command:
+    - nats-server-config-reloader
+    - -pid
+    - /var/run/nats/nats.pid
+    - -config
+    - /etc/nats-config/nats.conf
+    image: natsio/nats-server-config-reloader:0.6.2
+    imagePullPolicy: IfNotPresent
+    name: reloader
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /etc/nats-config
+      name: config-volume
+    - mountPath: /var/run/nats
+      name: pid
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-48g7r
+      readOnly: true
+  - args:
+    - -connz
+    - -routez
+    - -subz
+    - -varz
+    - -prefix=nats
+    - -use_internal_server_id
+    - -jsz=all
+    - http://localhost:8222/
+    image: natsio/prometheus-nats-exporter:0.8.0
+    imagePullPolicy: IfNotPresent
+    name: metrics
+    ports:
+    - containerPort: 7777
+      name: metrics
+      protocol: TCP
+    resources: {}
+    terminationMessagePath: /dev/termination-log
+    terminationMessagePolicy: File
+    volumeMounts:
+    - mountPath: /var/run/secrets/kubernetes.io/serviceaccount
+      name: kube-api-access-48g7r
+      readOnly: true
+  dnsPolicy: ClusterFirst
+  enableServiceLinks: true
+  hostname: nats-0
+  nodeName: minikube-m02
+  preemptionPolicy: PreemptLowerPriority
+  priority: 0
+  restartPolicy: Always
+  schedulerName: default-scheduler
+  securityContext: {}
+  serviceAccount: default
+  serviceAccountName: default
+  shareProcessNamespace: true
+  subdomain: nats
+  terminationGracePeriodSeconds: 120
+  tolerations:
+  - effect: NoExecute
+    key: node.kubernetes.io/not-ready
+    operator: Exists
+    tolerationSeconds: 300
+  - effect: NoExecute
+    key: node.kubernetes.io/unreachable
+    operator: Exists
+    tolerationSeconds: 300
+  volumes:
+  - configMap:
+      defaultMode: 420
+      name: nats-config
+    name: config-volume
+  - emptyDir: {}
+    name: pid
+  - name: kube-api-access-48g7r
+    projected:
+      defaultMode: 420
+      sources:
+      - serviceAccountToken:
+          expirationSeconds: 3607
+          path: token
+      - configMap:
+          items:
+          - key: ca.crt
+            path: ca.crt
+          name: kube-root-ca.crt
+      - downwardAPI:
+          items:
+          - fieldRef:
+              apiVersion: v1
+              fieldPath: metadata.namespace
+            path: namespace
+status:
+  conditions:
+  - lastProbeTime: null
+    lastTransitionTime: "2021-12-26T09:03:31Z"
+    status: "True"
+    type: Initialized
+  - lastProbeTime: null
+    lastTransitionTime: "2021-12-26T09:16:08Z"
+    status: "True"
+    type: Ready
+  - lastProbeTime: null
+    lastTransitionTime: "2021-12-26T09:16:08Z"
+    status: "True"
+    type: ContainersReady
+  - lastProbeTime: null
+    lastTransitionTime: "2021-12-26T09:03:31Z"
+    status: "True"
+    type: PodScheduled
+  containerStatuses:
+  - containerID: docker://8cc0de21e101b6c81d147bb1d1696800682db2a7815e32ba64fa60fa2c14df7b
+    image: natsio/prometheus-nats-exporter:0.8.0
+    imageID: docker-pullable://natsio/prometheus-nats-exporter@sha256:9d5f8e9e8e59896762fa7be7635badd242e4dbd3686e19ec6cf959366db0035e
+    lastState: {}
+    name: metrics
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2021-12-26T09:16:07Z"
+  - containerID: docker://b12a9c4d27539aa3f912d87cbae85c0308fc1efc754210e3ffed1944bd516b23
+    image: nats:2.6.3-alpine
+    imageID: docker-pullable://nats@sha256:a4a52bf9a4848b0019a2e95d30237f6cc54d6a5ed71f4a1b4114c6a92cea1f98
+    lastState: {}
+    name: nats
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2021-12-26T09:14:55Z"
+  - containerID: docker://3310a2b9174dc9131ef4fe845aba1edb410c11d58f3aed690a1622b936c45bff
+    image: natsio/nats-server-config-reloader:0.6.2
+    imageID: docker-pullable://natsio/nats-server-config-reloader@sha256:ad0374303b134b7d2d4a5a781107b426739df73fcf504c26c5ef15bc1c4ca10e
+    lastState: {}
+    name: reloader
+    ready: true
+    restartCount: 0
+    started: true
+    state:
+      running:
+        startedAt: "2021-12-26T09:15:57Z"
+  hostIP: 192.168.49.3
+  phase: Running
+  podIP: 10.244.1.12
+  podIPs:
+  - ip: 10.244.1.12
+  qosClass: BestEffort
+  startTime: "2021-12-26T09:03:31Z"

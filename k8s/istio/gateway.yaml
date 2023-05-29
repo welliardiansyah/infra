@@ -1,0 +1,282 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: Gateway
+metadata:
+  name: my-gateway
+spec:
+  selector:
+    istio: ingressgateway # use Istio default gateway implementation
+  servers:
+    - port:
+        number: 80
+        name: http
+        protocol: HTTP
+      hosts:
+        - 127.0.0.1 # local development
+        - 192.168.1.3
+        - 34.101.113.71 # gke load balancer
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: virtual-svc
+spec:
+  hosts:
+    - 127.0.0.1
+    - 192.168.1.3
+    - 34.101.113.71 # gke load balancer
+  gateways:
+    - my-gateway
+  http:
+    - match:
+        - uri:
+            prefix: /api/v1/admins
+      route:
+        - destination:
+            host: admins-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/auth
+      route:
+        - destination:
+            host: auth-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/balances
+      route:
+        - destination:
+            host: balances-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/catalogs
+      route:
+        - destination:
+            host: catalogs-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/customers
+      route:
+        - destination:
+            host: customers-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/deliveries
+      route:
+        - destination:
+            host: deliveries-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/merchants
+      route:
+        - destination:
+            host: merchants-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/loyalties
+      route:
+        - destination:
+            host: loyalties-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/orders
+      route:
+        - destination:
+            host: orders-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/reports
+      route:
+        - destination:
+            host: reports-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent
+    - match:
+        - uri:
+            prefix: /api/v1/payments
+      route:
+        - destination:
+            host: payments-svc.default.svc.cluster.local
+            port:
+              number: 3000
+      corsPolicy:
+        allowOrigins:
+          - exact: '*'
+        allowCredentials: true
+        allowMethods:
+          - POST
+          - PUT
+          - GET
+          - DELETE
+        allowHeaders:
+          - authorization
+          - content-type
+          - accept
+          - origin
+          - user-agent

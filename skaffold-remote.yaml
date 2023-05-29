@@ -1,0 +1,91 @@
+apiVersion: skaffold/v2beta18
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - './k8s/services/*'
+      - './k8s/config.local/*'
+build:
+  local:
+    push: true
+  artifacts:
+    - image: efood/admins
+      context: ../admins_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'
+    - image: efood/auth
+      context: ../auth_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'
+    - image: efood/catalogs
+      context: ../catalogs_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'
+    - image: efood/customers
+      context: ../customers_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'
+    - image: efood/deliveries
+      context: ../deliveries_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'
+    - image: efood/merchants
+      context: ../merchants_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'
+    - image: efood/notifications
+      context: ../notifications_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'
+    - image: efood/orders
+      context: ../orders_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'
+    - image: efood/otp
+      context: ../otp_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'
+    - image: efood/payments
+      context: ../payments_service
+      docker:
+        dockerfile: dev.Dockerfile
+      sync:
+        manual:
+          - dest: .
+            src: 'src/**/*.ts'

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-svc
+  labels:
+    app: efood
+    service: auth
+spec:
+  selector:
+    app: efood
+    service: auth
+  ports:
+    - name: http-port
+      port: 3000

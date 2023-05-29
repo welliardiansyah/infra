@@ -1,0 +1,49 @@
+server {
+
+    server_name zeus.efood.co.id;
+    root /var/www/zeus.efood.co.id/html;
+    index index.html index.htm;
+
+    listen [::]:443 ssl ipv6only=on; # managed by Certbot
+    listen 443 ssl; # managed by Certbot
+    ssl_certificate /etc/letsencrypt/live/zeus.efood.co.id/fullchain.pem; # managed by Certbot
+    ssl_certificate_key /etc/letsencrypt/live/zeus.efood.co.id/privkey.pem; # managed by Certbot
+    include /etc/letsencrypt/options-ssl-nginx.conf; # managed by Certbot
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem; # managed by Certbot
+
+    client_max_body_size 20M;
+
+    # Media: images, icons, video, audio, HTC
+    location ~* \.(?:jpg|jpeg|gif|png|ico|cur|gz|svg|svgz|mp4|ogg|ogv|webm|htc)$ {
+        expires 1M;
+        access_log off;
+        add_header Cache-Control "public";
+    }
+
+    # Javascript and CSS files
+    location ~* \.(?:css|js)$ {
+        try_files $uri =404;
+        expires 1y;
+        access_log off;
+        add_header Cache-Control "public";
+    }
+
+    # Any route containing a file extension (e.g. /devicesfile.js)
+    location ~ ^.+\..+$ {
+        try_files $uri =404;
+    }
+}
+server {
+    if ($host = zeus.efood.co.id) {
+        return 301 https://$host$request_uri;
+    } # managed by Certbot
+
+
+    listen 80;
+    listen [::]:80;
+
+    server_name zeus.efood.co.id;
+    return 404; # managed by Certbot
+
+
+}

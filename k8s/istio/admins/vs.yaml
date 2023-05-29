@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: admins-vs
+spec:
+  hosts:
+    - admins-svc
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/admins
+    route:
+    - destination:
+        host: admins-svc
+        port:
+          number: 3000

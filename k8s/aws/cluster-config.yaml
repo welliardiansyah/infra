@@ -1,0 +1,29 @@
+# ClusterConfig a Fargate profile.
+# usage: eksctl create cluster -f cluster-config.yaml
+---
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: efood-cluster
+  region: ap-southeast-1
+
+fargateProfiles:
+  - name: fp-default
+    selectors:
+      # All workloads in the "default" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: default
+      # All workloads in the "kube-system" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: kube-system
+  - name: fp-ingress-nginx
+    selectors:
+      # All workloads in the "ingress-nginx" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: ingress-nginx
+  - name: fp-cert-manager
+    selectors:
+      # All workloads in the "cert-manager" Kubernetes namespace will be
+      # scheduled onto Fargate:
+      - namespace: cert-manager

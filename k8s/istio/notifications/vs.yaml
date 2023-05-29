@@ -1,0 +1,16 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: notifications-vs
+spec:
+  hosts:
+    - notifications-svc
+  http:
+  - match:
+    - uri:
+        prefix: /api/v1/notifications
+    route:
+    - destination:
+        host: notifications-svc
+        port:
+          number: 3000

@@ -1,0 +1,238 @@
+version: '2'
+services:
+  admins:
+    build:
+      context: ../../admins_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../admins_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  auth:
+    build:
+      context: ../../auth_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../auth_service/src:/app/src
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    env_file: ./.env
+    expose:
+      - '80'
+
+  balances:
+    build:
+      context: ../../balances_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../balances_service/src:/app/src
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    env_file: ./.env
+    expose:
+      - '80'
+
+  catalogs:
+    build:
+      context: ../../catalogs_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../catalogs_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  customers:
+    build:
+      context: ../../customers_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../customers_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  deliveries:
+    build:
+      context: ../../deliveries_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../deliveries_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  loyalties:
+    build:
+      context: ../../loyalties_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../loyalties_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  merchants:
+    build:
+      context: ../../merchants_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../merchants_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  notifications:
+    build:
+      context: ../../notifications_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../notifications_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  orders:
+    build:
+      context: ../../orders_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../orders_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  otp:
+    build:
+      context: ../../otp_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../otp_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  payments:
+    build:
+      context: ../../payments_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../payments_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - "80"
+
+  reports:
+    build:
+      context: ../../reports_service
+      dockerfile: dev.Dockerfile
+    volumes:
+      - ../../reports_service/src:/app/src
+    env_file: ./.env
+    depends_on:
+      - dbpostgres
+      - proxy
+      - nats
+      - redis
+    expose:
+      - '80'
+
+  proxy:
+    build: ./
+    ports:
+      - 80:80
+      - 443:443
+
+  dbpostgres:
+    image: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data:rw
+    ports:
+      - '6543:5432'
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: nabati
+
+  nats:
+    image: nats
+    command: "-js -sd /data -m 8222"
+    volumes:
+      - natsdata:/data:rw
+    ports:
+      - 4222:4222
+      - 8222:8222
+
+  redis:
+    image: bitnami/redis:latest
+    env_file: ./.env
+    volumes:
+      - redisdata:/bitnami/redis/data:rw
+    ports:
+      - 6379:6379
+
+volumes:
+  pgdata:
+    driver: local
+  natsdata:
+    driver: local
+  redisdata:
+    driver: local

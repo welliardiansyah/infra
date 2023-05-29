@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: customers-svc
+  labels:
+    app: efood
+    service: customers
+spec:
+  selector:
+    app: efood
+    service: customers
+  ports:
+    - name: http-port
+      port: 3000

@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: notifications-svc
+  labels:
+    app: efood
+    service: notifications
+spec:
+  selector:
+    app: efood
+    service: notifications
+  ports:
+    - name: http-port
+      port: 3000

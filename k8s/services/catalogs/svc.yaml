@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: catalogs-svc
+  labels:
+    app: efood
+    service: catalogs
+spec:
+  selector:
+    app: efood
+    service: catalogs
+  ports:
+    - name: http-port
+      port: 3000
